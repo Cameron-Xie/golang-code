@@ -19,7 +19,7 @@ func main() {
 
 	printSlice(sortInterface(strPtrSlice))
 
-	// string pointer slice
+	// string array
 	strArray := [4]string{d, b, c, a}
 
 	printSlice(sortInterface(strArray))
