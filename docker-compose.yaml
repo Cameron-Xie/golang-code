@@ -1,0 +1,11 @@
+version: '3'
+services:
+  go:
+    container_name: code_go
+    build:
+      context: ./docker/golang
+    volumes:
+      - './:/go/code'
+    working_dir: '/go/code'
+    command: [ '/bin/sh', '-c', 'tail -f /dev/null' ]
+    restart: always
