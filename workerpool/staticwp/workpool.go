@@ -1,4 +1,4 @@
-package workerpool
+package staticwp
 
 import (
 	"context"
@@ -50,26 +50,21 @@ func (p *WorkerPool) setWorkers() {
 		go func() {
 			defer p.wg.Done()
 
-		Tasks:
-			for {
-				select {
-				case f, ok := <-p.tasks:
-					if !ok {
-						break Tasks
-					}
-
-					if err := f(); err != nil {
-						p.errOnce.Do(func() {
-							p.err = err
-
-							if p.cancel != nil {
-								p.cancel()
-							}
-						})
-					}
-				}
+			for task := range p.tasks {
+				p.processTask(task)
 			}
-
 		}()
+	}
+}
+
+func (p *WorkerPool) processTask(task Task) {
+	if err := task(); err != nil {
+		p.errOnce.Do(func() {
+			p.err = err
+
+			if p.cancel != nil {
+				p.cancel()
+			}
+		})
 	}
 }
